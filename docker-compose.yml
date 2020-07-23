@@ -1,0 +1,53 @@
+version: '3.7'
+services:
+  mongo:
+    build:
+      context: .
+      dockerfile: ./dockerfiles/mongo/dockerfile
+    container_name: mongo
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodata:/data/db
+    depends_on:
+      - rabbitmq
+  rabbitmq:
+    image: rabbitmq
+    container_name: rabbitmq
+    ports:
+      - 5672:5672
+  chatserver:
+    build:
+      context: .
+      dockerfile: ./dockerfiles/chatserver/dockerfile
+    container_name: chatserver
+    ports:
+      - 8001:8001
+    depends_on:
+      - mongo
+      - rabbitmq
+  chatbff:
+    build:
+      context: .
+      dockerfile: ./dockerfiles/chatbff/dockerfile
+    container_name: chatbff
+    ports:
+      - 8002:8002
+    depends_on:
+      - mongo
+      - rabbitmq
+      - chatserver
+  chatui:
+    build:
+      context: .
+      dockerfile: ./dockerfiles/chatui/dockerfile
+    container_name: chatui
+    stdin_open: true
+    ports:
+      - 3000:3000
+    depends_on:
+      - rabbitmq
+      - chatbff
+      - chatserver
+volumes:
+  mongodata:

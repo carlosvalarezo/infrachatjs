@@ -1,0 +1,28 @@
+FROM ubuntu:20.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+ENV DEPLOY=true
+
+RUN apt -y update && \
+    apt -y install git && \
+    apt -y install nodejs && \
+    apt -y install npm
+
+WORKDIR /bffchat/
+
+RUN rm -rf bffchatjs/
+
+RUN git clone https://github.com/carlosvalarezo/bffchatjs.git
+
+WORKDIR /bffchat/bffchatjs/
+
+RUN env
+
+RUN echo "lorenxo"
+
+RUN npm install
+
+EXPOSE 8002
+
+ENTRYPOINT ["npm", "start"]

@@ -1,0 +1,13 @@
+FROM ubuntu:20.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt -y update && \
+    apt -y upgrade && \
+    apt -y install mongodb
+
+EXPOSE 27017
+
+COPY dockerfiles/mongo/scripts/createDb.js /docker-entrypoint-initdb.d/createDb.js
+
+ENTRYPOINT ["mongod", "--bind_ip_all"]
